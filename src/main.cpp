@@ -28,6 +28,7 @@ uint8_t hand_back[8] = {
 
 DIYables_LCD_I2C lcd(0x27, 16, 2);
 
+int left = 1;
 void setup()
 {
   lcd.init();
@@ -40,58 +41,51 @@ void setup()
   lcd.createChar(2, ear_1);
   lcd.createChar(3, ear_2);
   lcd.createChar(4, eye);
-
   lcd.createChar(6, hand_back);
   lcd.createChar(7, hand_down);
 
-  lcd.setCursor(3, 0);
-  lcd.write(2);
-  lcd.write(3);
-
+  // left hand
   lcd.setCursor(1, 1);
   lcd.write(7);
   lcd.write(6);
 
-  // ушки
-  // правое
+  // right hand
+  lcd.setCursor(6, 1);
+  lcd.write(0);
+  lcd.write(1);
+
+  // ears
   lcd.setCursor(7, 0);
   lcd.write(2);
   lcd.write(3);
-  // левое
   lcd.setCursor(3, 0);
   lcd.write(2);
   lcd.write(3);
 
-  // глаза
-  // левое
+  // eyes
   lcd.setCursor(3, 1);
   lcd.write(4);
-  // правое
-  lcd.setCursor(6, 1);
-  lcd.write(0);
-  lcd.write(1);
+
+  // eyes
+  lcd.setCursor(5, 1);
+  lcd.write(4);
 }
 
 void loop()
 {
   if (Serial.available())
   {
+    Serial.read();
+    // left
     lcd.setCursor(1, 1);
-    lcd.write(0);
-    lcd.write(1);
+    lcd.write(left == 1 ? 0 : 7);
+    lcd.write(left == 1 ? 1 : 6);
 
+    // right
     lcd.setCursor(6, 1);
-    lcd.write(7);
-    lcd.write(6);
+    lcd.write(left == 1 ? 7 : 0);
+    lcd.write(left == 1 ? 6 : 1);
 
-    Serial.println(Serial.read());
-    delay(100);
-
-    lcd.setCursor(1, 1);
-    lcd.write(7);
-    lcd.write(6);
-    lcd.setCursor(6, 1);
-    lcd.write(0);
-    lcd.write(1);
+    left = left == 1 ? 0 : 1;
   }
 }
